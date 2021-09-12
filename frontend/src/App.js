@@ -1,37 +1,32 @@
-import { useContext } from "react";
+import { useEffect } from "react";
+import { Route, Switch } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import PrivateRoute from "./component/HOC/PrivateRoute";
 import Profile from "./pages/profile/Profile";
 import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
 import Register from "./pages/register/Register";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-} from "react-router-dom";
-import { AuthContext } from "./context/AuthContext";
+import { isUserLogedIn } from "./redux/action/authAction";
 
 function App() {
-  const { user } = useContext(AuthContext);
-  // const user = localStorage.getItem("user");
-  console.log("app.js", user);
+  const dispatch = useDispatch();
+
+  const auth = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (!auth.authenticate) {
+      dispatch(isUserLogedIn());
+    }
+  }, []);
   return (
-    <Router>
+    <>
       <Switch>
-        <Route path="/" exact>
-          {user ? <Home /> : <Redirect to="/register" />}
-        </Route>
-        <Route path="/login" exact>
-          {user ? <Redirect to="/" /> : <Login />}
-        </Route>
-        <Route path="/register" exact>
-          {user ? <Redirect to="/" /> : <Register />}
-        </Route>
-        <Route path="/profile/:username" exact>
-          <Profile />
-        </Route>
+        <PrivateRoute path="/" exact component={Home} />
+        <PrivateRoute path="/profile" exact component={Profile} />
+        <Route path="/signin" component={Login} />
+        <Route path="/signup" component={Register} />
       </Switch>
-    </Router>
+    </>
   );
 }
 

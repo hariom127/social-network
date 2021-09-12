@@ -1,24 +1,30 @@
-import { useRef, useContext } from "react";
-import { loginCall } from "../../apiCalls";
-import { AuthContext } from "../../context/AuthContext";
+import { useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Redirect } from "react-router-dom";
 import "./login.css";
 import { CircularProgress } from "@material-ui/core";
+import { login } from "../../redux/action/authAction";
 
 export default function Login() {
-  const { user, isFetching, error, dispatch } = useContext(AuthContext);
-
+  const dispatch = useDispatch();
+  const auth = useSelector((state) => state.auth);
+  const isFetching = auth.loading;
   const email = useRef();
   const password = useRef();
   const handelSubmit = (e) => {
-    console.log(email.current.value);
     e.preventDefault();
-    loginCall(
-      { email: email.current.value, password: password.current.value },
-      dispatch
-    );
-    // alert(isFetching);
+    const userCredentials = {
+      email: email.current.value,
+      password: password.current.value,
+    };
+    dispatch(login(userCredentials));
   };
-  console.log(user);
+
+  // if user loged in redirect to on dashboard
+  if (auth.authenticate) {
+    return <Redirect to={`/`} />;
+  }
+  console.log(auth.loading);
   return (
     <div className="login">
       <div className="loginWrapper">
@@ -49,18 +55,14 @@ export default function Login() {
             />
             <button className="loginButton" disabled={isFetching}>
               {isFetching ? (
-                <CircularProgress color="white" size="20px" />
+                <CircularProgress color="inherit" size="20px" />
               ) : (
                 "Login"
               )}
             </button>
             <span className="loginForgot">Forgot Password?</span>
             <button className="loginRegisterButton">
-              {isFetching ? (
-                <CircularProgress color="white" size="20px" />
-              ) : (
-                "Create a New Account"
-              )}
+              Create a New Account
             </button>
           </form>
         </div>

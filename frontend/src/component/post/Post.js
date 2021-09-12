@@ -2,8 +2,11 @@ import "./post.css";
 import { MoreVert } from "@material-ui/icons";
 import { Users } from "../../dummyData";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function Post({ post }) {
+  const auth = useSelector((state) => state.auth);
+
   const [like, setLike] = useState(post.like);
   const [isLiked, setIsLiked] = useState(false);
   //folder url
@@ -13,19 +16,15 @@ export default function Post({ post }) {
     setLike(isLiked ? like - 1 : like + 1);
     setIsLiked(!isLiked);
   };
+
   return (
     <div className="post">
       <div className="postWrapper">
         <div className="postTop">
           <div className="postTopLeft">
-            <img
-              className="postProfileImg"
-              src={Users.filter((u) => u.id === post?.userId)[0].profilePicture}
-              alt=""
-            />
-            <span className="postUsername">
-              {Users.filter((u) => u.id === post?.userId)[0].username}
-            </span>
+            {JSON.stringify(post)}
+            <img className="postProfileImg" src={auth.user.profile} alt="" />
+            <span className="postUsername">{auth.user.username}</span>
             <span className="postDate">{post.date}</span>
           </div>
           <div className="postTopRight">

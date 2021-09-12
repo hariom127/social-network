@@ -1,6 +1,15 @@
 import "./register.css";
+import { useDispatch, useSelector } from "react-redux";
+import { Redirect } from "react-router-dom";
 
 export default function Register() {
+  const dispatch = useDispatch();
+  const auth = useSelector((state) => state.auth);
+  // if user loged in redirect to on dashboard
+  if (auth.authenticate) {
+    return <Redirect to={`/`} />;
+  }
+
   return (
     <div className="login">
       <div className="loginWrapper">
@@ -17,9 +26,7 @@ export default function Register() {
             <input placeholder="Password" className="loginInput" />
             <input placeholder="Password Again" className="loginInput" />
             <button className="loginButton">Sign Up</button>
-            <button className="loginRegisterButton">
-              Log into Account
-            </button>
+            <button className="loginRegisterButton">Log into Account</button>
           </div>
         </div>
       </div>

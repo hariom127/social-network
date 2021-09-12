@@ -6,9 +6,9 @@ console.log(token, "axios");
 // create Intance of axios
 const axiosInc = axios.create({
   baseURL: api,
-  // headers: {
-  //   Authorization: token ? `${token}` : "",
-  // },
+  headers: {
+    Authorization: token ? `${token}` : "",
+  },
 });
 
 export default axiosInc;
